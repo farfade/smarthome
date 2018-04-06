@@ -70,7 +70,7 @@ public class WeatherUndergroundHandler extends BaseThingHandler {
 
     private final Logger logger = LoggerFactory.getLogger(WeatherUndergroundHandler.class);
 
-    private static final String URL = "http://api.wunderground.com/api/%APIKEY%/%FEATURES%/%SETTINGS%/q/%QUERY%.json";
+    private static final String URL = "%PROTOCOL%://api.wunderground.com/api/%APIKEY%/%FEATURES%/%SETTINGS%/q/%QUERY%.json";
     private static final String FEATURE_CONDITIONS = "conditions";
     private static final String FEATURE_FORECAST10DAY = "forecast10day";
     private static final String FEATURE_GEOLOOKUP = "geolookup";
@@ -361,6 +361,7 @@ public class WeatherUndergroundHandler extends BaseThingHandler {
 
         WeatherUndergroundConfiguration config = getConfigAs(WeatherUndergroundConfiguration.class);
         logger.debug("config apikey = {}", config.apikey);
+        logger.debug("config protocol = {}", config.protocol);
         logger.debug("config location = {}", config.location);
         logger.debug("config language = {}", config.language);
         logger.debug("config refresh = {}", config.refresh);
@@ -372,6 +373,11 @@ public class WeatherUndergroundHandler extends BaseThingHandler {
         if (StringUtils.trimToNull(config.apikey) == null) {
             errors += " Parameter 'apikey' must be configured.";
             statusDescr = "@text/offline.conf-error-missing-apikey";
+            validConfig = false;
+        }
+        if (StringUtils.trimToNull(config.protocol) == null) {
+            errors += " Parameter 'protocol' must be configured.";
+            statusDescr = "@text/offline.conf-error-missing-protocol";
             validConfig = false;
         }
         if (StringUtils.trimToNull(config.location) == null) {
@@ -681,8 +687,11 @@ public class WeatherUndergroundHandler extends BaseThingHandler {
 
             String urlStr = URL.replace("%APIKEY%", StringUtils.trimToEmpty(config.apikey));
 
+            urlStr = urlStr.replace("%PROTOCOL%", StringUtils.trimToEmpty(config.protocol));
+            
             urlStr = urlStr.replace("%FEATURES%", String.join("/", features));
-
+            
+            
             String lang = StringUtils.trimToEmpty(config.language);
             if (lang.isEmpty()) {
                 // If language is not set in the configuration, you try deducing it from the system language
