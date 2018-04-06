@@ -23,6 +23,7 @@ public class WeatherUndergroundConfiguration {
     public static final String LOCATION = "location";
 
     public String apikey;
+    public String protocol;
     public String location;
     public String language;
     public Integer refresh;
