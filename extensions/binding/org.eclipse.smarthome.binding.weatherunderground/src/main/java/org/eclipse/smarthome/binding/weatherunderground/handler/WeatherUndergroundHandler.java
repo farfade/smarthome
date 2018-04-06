@@ -376,9 +376,9 @@ public class WeatherUndergroundHandler extends BaseThingHandler {
             validConfig = false;
         }
         if (StringUtils.trimToNull(config.protocol) == null) {
-            errors += " Parameter 'protocol' must be configured.";
-            statusDescr = "@text/offline.conf-error-missing-protocol";
-            validConfig = false;
+            errors += " Parameter 'protocol' is not configured. Setting HTTP as a default";
+            statusDescr = "@text/offline.conf-info-default-protocol";
+            config.protocol="http";
         }
         if (StringUtils.trimToNull(config.location) == null) {
             errors += " Parameter 'location' must be configured.";
